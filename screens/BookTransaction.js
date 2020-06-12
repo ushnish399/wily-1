@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, TouchableOpacity, StyleSheet, Image, TextInput} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Image, TextInput, KeyboardAvoidingView, Alert} from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import db from '../config.js';
@@ -25,10 +25,12 @@ export default class BookTransaction extends React.Component{
             if(book.bookAvailability){
                 this.initiateBookIssue();
                 transactionMessage="BOOK ISSUED";
+                Alert.alert(transactionMessage);
             }
             else {
                 this.initiateBookReturn();
                 transactionMessage="BOOK RETURN";
+                Alert.alert(transactionMessage);
             }
         })
         this.setState({
@@ -37,6 +39,7 @@ export default class BookTransaction extends React.Component{
      }
 
      initiateBookIssue= async()=>{
+         console.log("ISSUE");
          db.collection("transaction").add({
              'studentId':this.state.scannedStudentId,
              'bookId':this.state.scannedBookId,
@@ -68,16 +71,16 @@ export default class BookTransaction extends React.Component{
 
     getPermissionsAsync = async (id) => {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
-        this.setState({ hasCameraPermission: status === 'granted', buttonState:id, scanned:'false', });
+        this.setState({ hasCameraPermission: status === 'granted', buttonState:id, scanned:false, });
       };
 
       handleBarcodeScanned=async({type,data})=>{
           const{buttonState}=this.state;
           if(buttonState==="BookId"){
-              this.setState({scanned:'true', scannedBookId:data, buttonState:'normal'})
+              this.setState({scanned:true, scannedBookId:data, buttonState:'normal'})
           }
           else if(buttonState==="StudentId"){
-              this.setState({scanned:'true', scannedStudentId:data, buttonState:'normal'})
+              this.setState({scanned:true, scannedStudentId:data, buttonState:'normal'})
           }
       }
 
@@ -92,19 +95,20 @@ export default class BookTransaction extends React.Component{
         }
         else if(buttonState==='normal'){
             return(
-                <View style={styles.container}>
+                <KeyboardAvoidingView style={styles.container} behavior='padding' enabled>
+             
                     <View>
                         <Image source={require("../assets/booklogo.jpg")} style={{width:200, height:200}}/>
                         <Text style={{textAlign:'center', fontSize:30}}>WILY</Text>
                     </View>
                     <View style={styles.inputView}>
-                        <TextInput style={styles.inputBox} placeholder="BOOK ID" value={this.state.scannedBookId}></TextInput>
+                        <TextInput style={styles.inputBox} placeholder="BOOK ID" value={this.state.scannedBookId} onChangeText={(text)=>{this.setState({scannedBookId:text})}}></TextInput>
                         <TouchableOpacity style={styles.scannedButton} onPress={()=>{this.getPermissionsAsync("BookId")}}>
                             <Text style={styles.buttonText}>SCAN</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.inputView}>
-                        <TextInput style={styles.inputBox} placeholder="STUDENT ID" value={this.state.scannedStudentId}></TextInput>
+                        <TextInput style={styles.inputBox} placeholder="STUDENT ID" value={this.state.scannedStudentId} onChangeText={(text)=>{this.setState({scannedStudentId:text})}}></TextInput>
                         <TouchableOpacity style={styles.scannedButton} onPress={()=>{this.getPermissionsAsync("StudentId")}}>
                             <Text style={styles.buttonText}>SCAN</Text>
                         </TouchableOpacity>
@@ -113,7 +117,7 @@ export default class BookTransaction extends React.Component{
             <TouchableOpacity style={styles.submitButton} onPress={async()=>{var transactionMessage=await this.handleTransaction();}}>
                 <Text style={styles.submitButtonText}>SUBMIT</Text>
             </TouchableOpacity>
-                </View>
+               </KeyboardAvoidingView>
             )
         }
        

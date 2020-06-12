@@ -4,6 +4,7 @@ import BookTransaction from './screens/BookTransaction';
 import SearchScreen from './screens/SearchScreen';
 import {createAppContainer} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
+import TransactionScreen from './screens/Transaction';
 
 export default class App extends React.Component{
   render(){
