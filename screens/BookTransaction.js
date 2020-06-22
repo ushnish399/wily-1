@@ -52,7 +52,7 @@ export default class BookTransaction extends React.Component{
          }
          else{
              studentRef.docs.map((doc)=>{
-                 var StudentId=doc.data();
+                 var student=doc.data();
                  if(student.numberOfBooksIssued<2){
                      isStudentEligible= true;
                  }
