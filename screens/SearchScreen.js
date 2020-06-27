@@ -5,7 +5,7 @@ import db from '../config';
 export default class SearchScreen extends React.Component{
     constructor(props){
         super(props);
-        this.state={allTransactions:[], seach:'', lastVisibleTransaction:null}
+        this.state={allTransactions:[], search:'', lastVisibleTransaction:null}
     }
 
     fetchMoreTransactions= async()=>{
