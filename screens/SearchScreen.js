@@ -36,12 +36,14 @@ export default class SearchScreen extends React.Component{
        
         var enteredText=text.split('');
         var text= text.toUpperCase();
+        console.log("hello");
         if(enteredText[0].toUpperCase()==='B'){
+           
             const query=await db.collection("transactions").where('bookId', '==', text).get();
             query.docs.map((doc)=>{
                 this.setState({
                     allTransactions:[...this.state.allTransactions, doc.data()],
-                    lastVisibleTransaction: doc
+                    lastVisibleTransaction: doc,
                 })
             })
         }
@@ -62,7 +64,7 @@ export default class SearchScreen extends React.Component{
          query.docs.map((doc)=>{
              this.setState({
                  allTransactions:[], 
-                 lastVisibleTransaction:doc
+                 lastVisibleTransaction:doc,
              })
          })
      }
@@ -72,7 +74,7 @@ export default class SearchScreen extends React.Component{
            <View style={styles.container}>
                <View style={styles.searchBar}>
                    <TextInput style={styles.bar} placeholder='ENTER BOOK ID OR STUDENT ID' onChangeText={(text)=>{this.setState({search: text})}}></TextInput>
-                   <TouchableOpacity style={styles.searchButton} onpress={()=>{this.searchTransactions(this.state.search)}}>
+                   <TouchableOpacity style={styles.searchButton} onPress={()=>{this.searchTransactions(this.state.search)}}>
                        <Text>SEARCH</Text>
                    </TouchableOpacity>
                </View>
